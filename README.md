@@ -45,7 +45,7 @@ We can use git but the key term here is managed service, if we dont use codeComm
 ## Demo on creating a repository in aws management console.
 
 - Search **CodeCommit** on AWS and create a repository.
-- Look here for more Steps in detail: Demo_CodeCommitActions.md 
+- Look here for more Steps in detail: [Demo_CodeCommitActions.md](https://github.com/Ashutoshdikshit07/SDLC-Automation/blob/e671dab409b01aaad5991f8cadc7880b7742e569/Demo_CodeCommitActions.md) 
 
 
 >there are other repositories that can be used in AWS deployments include S3, GitHub, BitBucket and github enterprise.
