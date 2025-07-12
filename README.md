@@ -51,3 +51,9 @@ We can use git but the key term here is managed service, if we dont use codeComm
 >there are other repositories that can be used in AWS deployments include S3, GitHub, BitBucket and github enterprise.
 
 
+# CodeCommit Data Security
+
+Create an IAM group to manage the developers in one place and attach that policy to the group.
+
+
+
