@@ -23,7 +23,8 @@ code commit -> code build -> code deploy.
 
 We can manage and automate all this with **CodePipeline**.
 
-
+----
+----
 # CodeCommit
 It is a managed service that hosts private git repositories.
 
@@ -56,4 +57,64 @@ We can use git but the key term here is managed service, if we dont use codeComm
 Create an IAM group to manage the developers in one place and attach that policy to the group.
 
 
+----
+----
 
+# CodeBuild
+
+Fully managed continuous integration service that compiles source code, runs tests, and produces software packages that are ready to deploy.
+It is charged on how many operations we are doing, how long we are running and not on hardware.
+
+> Here we dont have to maintain the servers that is done by AWS.
+
+## How do we access CodeBuild ?
+- Management Console
+- CLI
+- SDK
+- CodePipeline
+
+----
+
+- We have a codeCommit from where we get the code
+- we build it using CodeBuild where it is fully managed, No need to provision/scale servers, prepackaged build environments.
+- We perform our build and need to store those outputs artifacts and we store them in S3. Here we need to turn on versioning, encryption.
+- This then goes to CodeDeploy.
+
+Here we see the making of our pipeline.
+
+ **How can CodeBuild be used ?**
+
+- It can be added to the build stage and also the test stage in a pipeline.
+- You must provide CodeBuild with a **build project**.
+- **What is a build Project ?**
+   -  Build Project includes information about how to run a build, including where to get the source code, which build environment to use, which build commands to run, and where to store the build output.
+  
+
+## How does CodeBuild Work ?
+
+1. We need to provide **CodeBuild** with a build project, and build project is going to tell **CodeBuild** how to perform the build.
+2. **CodeBuild** uses **BuildProject** to create a build environment.
+3. There is a source code which downloads in the build environment and uses build specification known as **buildspec** file.
+    - **buildspec** file is a collection of build commands and related setting that **CodeBuild** uses to run a build
+4.  CodeBuild sends the output of a build to our output repository S3, other things it can do is setup notifications so can involve **SNS** here (follow demo- [DEMO-CodeCommit-TriggersEmailNotifcation.md](https://github.com/Ashutoshdikshit07/SDLC-Automation/blob/fbcc6d7af1d40c018c00b127a01404b6bd69c530/DEMO-CodeCommit-TriggersEmailNotifcation.md) )
+5. While our build is running it can do 2 things.
+   - build Project can send information to CloudWatch
+   - Information can be send to CodeBuild
+6. While our build is running, we can use our interface of choice (CLI, Management console, SDK, CodePipeline) to get updates on our build
+   - We can do that from CloudWatch or look and CodeBuild from these interfaces. (we can see all these once we go into CodePipeline
+
+- In S3, we need an input bucket and output bucket.
+  - our input is comming from CodeCommit. We output it to S3.
+  - That output will be the input for the next stage, CodeDeploy or the deployment stage to be specific. Here we can also use Jenkins with AWS plugin for our deployments.
+  > we need our buckets versioned, and these buckets should be in the same region as our build.
+
+## use cases
+
+We can set up cloudWatch events to monitor our repository and after successful commit to the repository, we can trigger the CodeBuild to run a code on that just merged source code. We can even have a lambda function to trigger on an update to codeCommit or merge.
+
+> EventBridge and cloudWatch is the same thing.
+
+
+## Do we need a build Stage ? 
+Only if our code needs to be built or packaged. 
+Eg. For Java, you build JAR file, whereas for HTML does not need a build.
