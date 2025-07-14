@@ -118,3 +118,72 @@ We can set up cloudWatch events to monitor our repository and after successful c
 ## Do we need a build Stage ? 
 Only if our code needs to be built or packaged. 
 Eg. For Java, you build JAR file, whereas for HTML does not need a build.
+
+
+# Build Projects and Buildspec file
+
+From Source code we create a build Project, **build Project** creates a build environment but we need a buildspec file
+
+## Steps in a Build Project
+
+1. Our Project is submitted.
+2. Provisioning starts, Provisioning means what ? CodeBuild is a managed service so we are not thinking of servers but we need build servers. (AWS is handling that for us)
+3. Download source code (typicalling our **buildspec** file is zipped with the source code)
+4. It installs.
+5. Pre-build phase (get into details once we understand more about buildspec file- YAML format)
+6. then build phase
+7. post build 
+8. Artifacts (this is what we get after post build phase)
+9. Finalizing
+10. Completing
+11. Built output artifact is going into S3(lets say Jar file)
+12. Then goes into codeDeploy
+
+## Buildspec
+It is a collection of build commands and related settings, in YAML format, that codeBuild uses to run a build.
+
+### How does a buildspec file work with the build environment ?
+- Include as part of source code.
+- Or define a buildspec when you create a build project.
+
+### Benefits of using buildspec ? 
+
+Without buildspec, **CodeBuild** cannot successfully convert your build input into build output or locate the build output artifact in the build environment to upload to your output bucket.
+
+> [!TIP]
+> 1. if we include buildspec as part of the source code, by default it should be named as **buildspec.yml** and placed in root of your source directory.
+> 2. we can specficy only 1 buildspec for a build project, regardless of the buildspec file's name.
+
+
+## Running CodeBuild Locally 
+
+It helps us to test our buldspec file before running.
+
+1. Install git on local machine
+2. install and set up Docker on local machine
+3. Set up the build image - you can pull it from the CodeBuild public amazon ECR repository
+4. Download the CodeBuild Agent
+5. Run the CodeBuild Agent.
+
+## CodeBuild with VPC - DEMO
+
+CodeBuild cant access resources in a VPC, but we can enable this
+
+**USECASES**
+1. Run integration tests from your build against the data in an Amazon RDS database thats isolated on private subnet.
+2. Query data in an amazon ElastiCache cluster directly from test.
+3. Interact with internal web services hosted on Amazon EC2, Amazon ECS, or services that use internal **Elastic Load Balancing**
+
+
+## DEMO - CodeBuild with VPC
+1. Make sure you have a **codeCommit Repo** before starting with **CodeBuild**.
+2. Create a CodeBuild Project, Use below image for reference.
+   <img width="802" height="915" alt="Screenshot 2025-07-14 at 12 36 53 PM" src="https://github.com/user-attachments/assets/8edca0fd-874d-4809-952a-55bca02adc2f" />
+
+3. Make sure you have a VPC created with private and public subnet setup with internet gateway and NAT - if not follow the documentation : [README.md] (https://github.com/Ashutoshdikshit07/SecureScalableAWSDeployment/blob/bcdd932baf86020f773c9e29aa53b33cce2e7d26/README.md)
+4. Look for additional configuration and select VPC and subnet that you just created and validate it- Refer below screenshot.
+    <img width="890" height="808" alt="Screenshot 2025-07-14 at 1 13 49 PM" src="https://github.com/user-attachments/assets/957fdd3c-a544-4213-be9b-7a99571f9e82" />
+5. Create build project. Now our build project can access resource within that VPC.
+
+
+
