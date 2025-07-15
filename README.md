@@ -176,14 +176,78 @@ CodeBuild cant access resources in a VPC, but we can enable this
 
 
 ## DEMO - CodeBuild with VPC
-1. Make sure you have a **codeCommit Repo** before starting with **CodeBuild**.
-2. Create a CodeBuild Project, Use below image for reference.
-   <img width="802" height="915" alt="Screenshot 2025-07-14 at 12 36 53 PM" src="https://github.com/user-attachments/assets/8edca0fd-874d-4809-952a-55bca02adc2f" />
-
-3. Make sure you have a VPC created with private and public subnet setup with internet gateway and NAT - if not follow the documentation : [README.md] (https://github.com/Ashutoshdikshit07/SecureScalableAWSDeployment/blob/bcdd932baf86020f773c9e29aa53b33cce2e7d26/README.md)
-4. Look for additional configuration and select VPC and subnet that you just created and validate it- Refer below screenshot.
-    <img width="890" height="808" alt="Screenshot 2025-07-14 at 1 13 49 PM" src="https://github.com/user-attachments/assets/957fdd3c-a544-4213-be9b-7a99571f9e82" />
-5. Create build project. Now our build project can access resource within that VPC.
+[DEMO-CodeBuild-with-VPC.md](https://github.com/Ashutoshdikshit07/SDLC-Automation/blob/934f41953808e1cd8e62ecc3f5b2549150fd968e/DEMO-CodeBuild-with-VPC.md)
 
 
+----
+----
+# CodeDeploy
 
+CodeDeploy can deploy to EC2, lambda functions, and ECS
+
+## CodeDeploy setup and configuration
+
+ 1. Provision an IAM user with access to CodeDeploy. (addtach a codeDeploy policy to the user)
+ 2. Create an IAM instance profile to allow EC2 to access your repositories. (it means we want to allow EC2 to access that S3 output artifact bucket)
+ 3. Create an IAM service role that will grant CodeDeploy access to other AWS resources. 
+
+
+## What to Deploy ?
+We have a Java application and we have some updates to that application, we build and package it into JAR file, that is a revision. Thats what we want to deploy.
+- scripts
+- code
+- serverless lambda functions
+- executable packages
+- web and config files
+- media files.
+
+## How to Deploy and at what Rate ? 
+We need to setup **deployment configuration**, and deployment configuration answers this question.  
+
+## Where to deploy ?
+We deploy to deployment group. This deployement group could be a single instance, group of instances, can be amazon linux instances, ubuntu, lambda, ECS etc.
+This instances should have codeDeploy agent install.
+
+
+## Adding Automation 
+
+- With EventBridge we can monitor our deployments on CodeDeploy.
+- Create a SNS topic and subscribe to that topic.
+- We perform a deploy, triggers our automation.
+
+**What if its urgent ?** we can trigger a lambda function and can be setup for a notification on slack channel.
+
+
+## What is CodeDeploy Application ?
+In CodeDeploy, an application is simply a name identifier used to reference your deployment settings. (its not a software application just a name identifier)
+
+## What is deployment group ?
+It is the instance or instances where you want to target and deploy your code.
+
+## What is a deployment configuration ? 
+It is the number of instances (which you can select at any time) for which you want to deploy your code.
+It is a set of rules and success and failure conditions used by CodeDeploy during a deployment.
+
+## Deployment Steps
+
+1. Create an application (not a software application its a codeDeploy application).
+2. Create a deployment group (even if it is 1 instance it is a group)
+3. Specify deployment config. (we use minihumHealthyHosts in that situation)
+4. We then upload our revision (not a codedeploy term its the package we want to deploy, maybe a JAR file)
+5. Deploy
+6. Check Results. ( if not happy with the results we can go back and deploy again)
+   > we can automate our rollbacks as well.
+7. Redeploy as needed.
+
+## Default deployment options
+- One at a time.
+- All at once.
+- Half a time.
+
+
+# CodeDeploy appspec.yml
+
+Like codeBuild has a buildspec file, appspec file is a YAML file and is used to manage each deployment as a series of lifecycle event hooks.
+**CodeDeploy** gets Deployable content + **AppSpec** file and deploys to **Deployment Group**.
+ 
+> appspec manages our deployment.
