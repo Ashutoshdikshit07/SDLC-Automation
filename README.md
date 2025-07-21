@@ -251,3 +251,14 @@ Like codeBuild has a buildspec file, appspec file is a YAML file and is used to 
 **CodeDeploy** gets Deployable content + **AppSpec** file and deploys to **Deployment Group**.
  
 > appspec manages our deployment.
+
+----
+----
+# CodePipeline
+
+**Concepts**
+- Continuous delivery
+- Automation
+- Build, test, deploy
+- setup and config
+
